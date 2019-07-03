@@ -42,21 +42,32 @@ public class MovieRestController {
     @PostMapping("add-movie")
     public ResponseEntity<Movie> saveMovie(@Valid @RequestBody Movie movie) throws URISyntaxException {
         Movie result = service.saveMovie(movie);
-        return ResponseEntity.created(new URI("add-movie)" + result.getMovieId()))
+        return ResponseEntity.created(new URI("add-movie" + result.getMovieId()))
                 .body(result);
 
     }
 
     @PutMapping("update-movie/{id}")
-    public ResponseEntity<Movie> updateMovie(@Valid @RequestBody Movie movie){
-        Movie result = service.saveMovie(movie);
-        return ResponseEntity.ok().body(result);
+    public ResponseEntity<Movie> updateMovie(@PathVariable Long id, @Valid @RequestBody Movie movie){
+        Optional<Movie> movieFromDatabase = service.findMovieById(id);
+        if(movieFromDatabase.isPresent()){
+            movie.setMovieId(id);
+            Movie result = service.saveMovie(movie);
+            return ResponseEntity.ok().body(result);
+        }else{
+           return ResponseEntity.badRequest().build();
+        }
     }
 
     @DeleteMapping("delete-movie-by-id/{id}")
     public ResponseEntity<?> deleteMovie(@PathVariable Long id) {
-        service.deleteMovieById(id);
-        return ResponseEntity.ok().build();
+        Optional<Movie> movieFromDatabase = service.findMovieById(id);
+        if(movieFromDatabase.isPresent()){
+            service.deleteMovieById(id);
+            return ResponseEntity.ok().build();
+        }else{
+            return ResponseEntity.badRequest().build();
+        }
     }
 }
 
