@@ -18,6 +18,7 @@ import java.util.Optional;
 @CrossOrigin
 @RestController
 @RequestScope
+@RequestMapping("/rest")
 public class MovieRestController {
 
     private MovieService service;
