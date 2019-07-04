@@ -1,5 +1,6 @@
 package pl.com.tt.restapp.repository;
 
+import pl.com.tt.restapp.domain.Actor;
 import pl.com.tt.restapp.domain.Movie;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

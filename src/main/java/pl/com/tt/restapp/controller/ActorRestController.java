@@ -28,7 +28,7 @@ public class ActorRestController {
         this.service = service;
     }
 
-    @GetMapping("get-all-actor")
+    @GetMapping("get-all-actors")
     public List<Actor> getAllMovies() {
         return service.findAllActors();
     }

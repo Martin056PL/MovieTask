@@ -12,5 +12,4 @@ public interface ActorRepository extends CrudRepository<Actor, Long> {
     List<Actor> findAll();
     
     Actor findAllByActorId(Long id);
-    
 }

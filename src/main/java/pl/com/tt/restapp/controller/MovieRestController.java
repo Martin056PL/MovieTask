@@ -15,34 +15,42 @@ import java.util.List;
 import java.util.Optional;
 
 
+
 @CrossOrigin
 @RestController
 @RequestScope
 @RequestMapping("/rest")
 public class MovieRestController {
 
-    private MovieService service;
+    private MovieService movieService;
 
     @Autowired
-    public MovieRestController(MovieService service) {
-        this.service = service;
+    public MovieRestController(MovieService movieService) {
+        this.movieService = movieService;
     }
 
     @GetMapping("get-all-movies")
     public List<Movie> getAllMovies() {
-        return service.findAllMovies();
+        return movieService.findAllMovies();
     }
 
     @GetMapping("get-movie-by-id/{id}")
     public ResponseEntity<?> getAllMoviesById(@PathVariable Long id) {
-        Optional<Movie> movieFromDataBase = service.findMovieById(id);
+        Optional<Movie> movieFromDataBase = movieService.findMovieById(id);
         return movieFromDataBase.map(response -> ResponseEntity.ok().body(response))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping("get-movie-by-id/{id}/actors")
+    public ResponseEntity<?> getActorsFromMovieByIdMovie(@PathVariable Long id) {
+        Optional<Movie> movieFromDataBase = movieService.findMovieById(id);
+        return movieFromDataBase.map(response -> ResponseEntity.ok().body(response.getActors()))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping("add-movie")
     public ResponseEntity<Movie> saveMovie(@Valid @RequestBody Movie movie) throws URISyntaxException {
-        Movie result = service.saveMovie(movie);
+        Movie result = movieService.saveMovie(movie);
         return ResponseEntity.created(new URI("add-movie" + result.getMovieId()))
                 .body(result);
 
@@ -50,10 +58,10 @@ public class MovieRestController {
 
     @PutMapping("update-movie/{id}")
     public ResponseEntity<Movie> updateMovie(@PathVariable Long id, @Valid @RequestBody Movie movie){
-        Optional<Movie> movieFromDatabase = service.findMovieById(id);
+        Optional<Movie> movieFromDatabase = movieService.findMovieById(id);
         if(movieFromDatabase.isPresent()){
             movie.setMovieId(id);
-            Movie result = service.saveMovie(movie);
+            Movie result = movieService.saveMovie(movie);
             return ResponseEntity.ok().body(result);
         }else{
            return ResponseEntity.badRequest().build();
@@ -62,9 +70,9 @@ public class MovieRestController {
 
     @DeleteMapping("delete-movie-by-id/{id}")
     public ResponseEntity<?> deleteMovie(@PathVariable Long id) {
-        Optional<Movie> movieFromDatabase = service.findMovieById(id);
+        Optional<Movie> movieFromDatabase = movieService.findMovieById(id);
         if(movieFromDatabase.isPresent()){
-            service.deleteMovieById(id);
+            movieService.deleteMovieById(id);
             return ResponseEntity.ok().build();
         }else{
             return ResponseEntity.badRequest().build();

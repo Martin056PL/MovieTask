@@ -1,5 +1,6 @@
 package pl.com.tt.restapp.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -9,6 +10,7 @@ import java.util.List;
 
 @Data
 @Entity
+@AllArgsConstructor
 @Table(name = "movies")
 public class Movie implements Serializable {
 
