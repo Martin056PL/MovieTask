@@ -18,7 +18,6 @@ import java.util.Optional;
 @CrossOrigin
 @RestController
 @RequestScope
-@RequestMapping("/rest")
 public class MovieRestController {
 
     private MovieService service;
@@ -28,19 +27,19 @@ public class MovieRestController {
         this.service = service;
     }
 
-    @GetMapping("/get-all-movies")
+    @GetMapping("get-all-movies")
     public List<Movie> getAllMovies() {
         return service.findAllMovies();
     }
 
-    @GetMapping("/get-movie-by-id/{id}")
+    @GetMapping("get-movie-by-id/{id}")
     public ResponseEntity<?> getAllMoviesById(@PathVariable Long id) {
         Optional<Movie> movieFromDataBase = service.findMovieById(id);
         return movieFromDataBase.map(response -> ResponseEntity.ok().body(response))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping("/add-movie")
+    @PostMapping("add-movie")
     public ResponseEntity<Movie> saveMovie(@Valid @RequestBody Movie movie) throws URISyntaxException {
         Movie result = service.saveMovie(movie);
         return ResponseEntity.created(new URI("add-movie" + result.getMovieId()))
@@ -48,7 +47,7 @@ public class MovieRestController {
 
     }
 
-    @PutMapping("/update-movie/{id}")
+    @PutMapping("update-movie/{id}")
     public ResponseEntity<Movie> updateMovie(@PathVariable Long id, @Valid @RequestBody Movie movie){
         Optional<Movie> movieFromDatabase = service.findMovieById(id);
         if(movieFromDatabase.isPresent()){
@@ -60,7 +59,7 @@ public class MovieRestController {
         }
     }
 
-    @DeleteMapping("/delete-movie-by-id/{id}")
+    @DeleteMapping("delete-movie-by-id/{id}")
     public ResponseEntity<?> deleteMovie(@PathVariable Long id) {
         Optional<Movie> movieFromDatabase = service.findMovieById(id);
         if(movieFromDatabase.isPresent()){
