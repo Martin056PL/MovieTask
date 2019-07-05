@@ -10,7 +10,6 @@ import java.util.List;
 
 @Data
 @Entity
-@AllArgsConstructor
 @Table(name = "movies")
 public class Movie implements Serializable {
 

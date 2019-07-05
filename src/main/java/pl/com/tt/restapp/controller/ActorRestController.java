@@ -6,7 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 import pl.com.tt.restapp.domain.Actor;
+import pl.com.tt.restapp.domain.Movie;
 import pl.com.tt.restapp.service.ActorService;
+import pl.com.tt.restapp.service.MovieService;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -21,50 +23,66 @@ import java.util.Optional;
 @RequestMapping("/rest")
 public class ActorRestController {
 
-    private ActorService service;
+    private ActorService actorService;
+    private MovieService movieService;
 
     @Autowired
-    public ActorRestController(ActorService service) {
-        this.service = service;
+    public ActorRestController(ActorService actorService, MovieService movieService) {
+        this.actorService = actorService;
+        this.movieService = movieService;
     }
 
-    @GetMapping("get-all-actors")
+    @GetMapping("actors")
     public List<Actor> getAllMovies() {
-        return service.findAllActors();
+        return actorService.findAllActors();
     }
 
-    @GetMapping("get-actor-by-id/{id}")
+    @GetMapping("actors/{id}")
     public ResponseEntity<?> getAllMoviesById(@PathVariable Long id) {
-        Optional<Actor> actorFromDataBase = service.findActorById(id);
+        Optional<Actor> actorFromDataBase = actorService.findActorById(id);
         return actorFromDataBase.map(response -> ResponseEntity.ok().body(response))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping("add-actor")
+    @GetMapping("movies/{id}/actors")
+    public ResponseEntity<?> getAllActorsFromMovieByIdMovie(@PathVariable Long id) {
+        Optional<Movie> movieFromDataBase = movieService.findMovieById(id);
+        return movieFromDataBase.map(response -> ResponseEntity.ok().body(response.getActors()))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping("movies/{movieId}/actors/{actorId}")
+    public ResponseEntity<?> getProperActorBaseOnActorIdFromMovieByIdMovie(@PathVariable Long movieId,@PathVariable Long actorId) {
+        Optional<Movie> movieFromDataBase = movieService.findMovieById(movieId);
+        return movieFromDataBase.map(response -> ResponseEntity.ok().body(response.getActors().stream().filter(actor -> actor.getActorId().equals(actorId))))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @PostMapping("actors")
     public ResponseEntity<Actor> saveActor(@Valid @RequestBody Actor actor) throws URISyntaxException {
-        Actor result = service.saveActor(actor);
+        Actor result = actorService.saveActor(actor);
         return ResponseEntity.created(new URI("add-movie" + result.getActorId()))
                 .body(result);
 
     }
 
-    @PutMapping("update-actor/{id}")
+    @PutMapping("actors/{id}")
     public ResponseEntity<Actor> updateMovie(@PathVariable Long id, @Valid @RequestBody Actor actor){
-        Optional<Actor> movieFromDatabase = service.findActorById(id);
+        Optional<Actor> movieFromDatabase = actorService.findActorById(id);
         if(movieFromDatabase.isPresent()){
             actor.setActorId(id);
-            Actor result = service.saveActor(actor);
+            Actor result = actorService.saveActor(actor);
             return ResponseEntity.ok().body(result);
         }else{
             return ResponseEntity.badRequest().build();
         }
     }
 
-    @DeleteMapping("delete-actor-by-id/{id}")
+    @DeleteMapping("actors/{id}")
     public ResponseEntity<?> deleteMovie(@PathVariable Long id) {
-        Optional<Actor> movieFromDatabase = service.findActorById(id);
+        Optional<Actor> movieFromDatabase = actorService.findActorById(id);
         if(movieFromDatabase.isPresent()){
-            service.deleteActorById(id);
+            actorService.deleteActorById(id);
             return ResponseEntity.ok().build();
         }else{
             return ResponseEntity.badRequest().build();
