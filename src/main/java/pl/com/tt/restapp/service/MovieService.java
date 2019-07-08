@@ -1,41 +1,17 @@
 package pl.com.tt.restapp.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import pl.com.tt.restapp.domain.Movie;
-import pl.com.tt.restapp.repository.MovieRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-@Service
-public class MovieService {
+public interface MovieService {
 
-    private MovieRepository repository;
+    List<Movie> findAllMovies();
 
-    @Autowired
-    public MovieService(MovieRepository repository) {
-        this.repository = repository;
-    }
+    Optional<Movie> findMovieById(Long id);
 
-    public List<Movie> findAllMovies(){
-        return repository.findAll();
-    }
+    Movie saveMovie(Movie movie);
 
-    public Optional<Movie> findMovieById(Long id) {
-        Movie movieFromDataBase = repository.findAllByMovieId(id);
-        return Optional.ofNullable(movieFromDataBase);
-
-    }
-
-    public Movie saveMovie(Movie movie) {
-        return repository.save(movie);
-    }
-
-    public void deleteMovieById(Long id) {
-        repository.deleteById(id);
-    }
-
-
-
+    void deleteMovieById(Long id);
 }

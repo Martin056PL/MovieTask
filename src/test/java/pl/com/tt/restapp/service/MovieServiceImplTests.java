@@ -20,7 +20,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class MovieServiceTests {
+public class MovieServiceImplTests {
 
     private final List<Movie> db = initialMockData();
 
@@ -28,7 +28,7 @@ public class MovieServiceTests {
     MovieRepository repository;
 
     @InjectMocks
-    MovieService service;// = new MovieService(repository);
+    MovieServiceImpl service;// = new MovieService(repository);
 
 
     @Test

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 import pl.com.tt.restapp.domain.Movie;
 import pl.com.tt.restapp.service.MovieService;
+import pl.com.tt.restapp.service.MovieServiceImpl;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -25,7 +26,7 @@ public class MovieRestController {
     private MovieService movieService;
 
     @Autowired
-    public MovieRestController(MovieService movieService) {
+    public MovieRestController(MovieServiceImpl movieService) {
         this.movieService = movieService;
     }
 
