@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 @Data
 @AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor
 @Getter @Setter @ToString
 @EqualsAndHashCode
 

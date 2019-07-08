@@ -2,6 +2,7 @@ package pl.com.tt.restapp.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,6 +11,8 @@ import java.util.List;
 
 @Data
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "movies")
 public class Movie implements Serializable {
 
@@ -32,4 +35,10 @@ public class Movie implements Serializable {
             inverseJoinColumns = { @JoinColumn(name = "actor_id") })
     private List<Actor> actors;
 
+    /*public Movie(String title, LocalDate datePremiere, String type, List<Actor> actors) {
+        this.title = title;
+        this.datePremiere = datePremiere;
+        this.type = type;
+        this.actors = actors;
+    }*/
 }
