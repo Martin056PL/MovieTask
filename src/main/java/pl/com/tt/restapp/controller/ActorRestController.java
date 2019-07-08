@@ -88,7 +88,6 @@ public class ActorRestController {
             List<Actor> actorsList = movieFromDatabase.get().getActors();
             Optional<Actor> optionalActorFromDataBaseBaseOnId = actorsList.stream().filter(actor -> actor.getActorId().equals(actorId)).findAny();
             if (optionalActorFromDataBaseBaseOnId.isPresent()) {
-                Actor actor = optionalActorFromDataBaseBaseOnId.get();
                 Actor result = actorService.saveActor(actorJSON);
                 return ResponseEntity.ok().body(result);
             } else {
