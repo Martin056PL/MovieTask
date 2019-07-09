@@ -19,6 +19,6 @@ public interface ActorService {
 
     ResponseEntity<Movie> saveActorToProperMovie(Movie movieFromDatabase, Actor actorJSON);
 
-    void deleteActorById(Long id);
+    ResponseEntity<?> deleteActorById(Movie movie, Long actorId);
 
 }

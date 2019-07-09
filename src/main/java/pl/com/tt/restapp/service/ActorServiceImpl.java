@@ -1,15 +1,12 @@
 package pl.com.tt.restapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import pl.com.tt.restapp.domain.Actor;
 import pl.com.tt.restapp.domain.Movie;
 import pl.com.tt.restapp.repository.ActorRepository;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,10 +33,11 @@ public class ActorServiceImpl implements ActorService {
         Actor movieFromDataBase = repository.findAllByActorId(id);
         return Optional.ofNullable(movieFromDataBase);
     }
-
     @Override
-    public void deleteActorById(Long id) {
-        repository.deleteById(id);
+    public ResponseEntity<Movie> saveActorToProperMovie(Movie movieFromDatabase, Actor actorJSON) {
+        movieFromDatabase.getActors().add(actorJSON);
+        Movie result = movieService.saveMovie(movieFromDatabase);
+        return ResponseEntity.ok().body(result);
     }
 
     @Override
@@ -63,16 +61,18 @@ public class ActorServiceImpl implements ActorService {
     }
 
     @Override
-    public ResponseEntity<Movie> saveActorToProperMovie(Movie movieFromDatabase, Actor actorJSON) {
-        movieFromDatabase.getActors().add(actorJSON);
-        Movie result = movieService.saveMovie(movieFromDatabase);
-        return ResponseEntity.ok().body(result);
+    public ResponseEntity<?> deleteActorById(Movie movie, Long actorId) {
+        deleteActor(actorId);
+        movieService.saveMovie(movie);
+        return ResponseEntity.ok().build();
     }
-
-
 
     private Actor saveActor(Actor actor) {
         return repository.save(actor);
+    }
+
+    private void deleteActor(Long id) {
+        repository.deleteById(id);
     }
 }
 
