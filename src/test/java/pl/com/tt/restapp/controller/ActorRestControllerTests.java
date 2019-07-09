@@ -87,4 +87,18 @@ public class ActorRestControllerTests {
         Assert.assertEquals(HttpStatus.NOT_FOUND, controller.getAllActorsFromMovieByIdMovie(movieID).getStatusCode());
     }
 
+    @Test
+    public void asdd(){
+        when(movieService.findMovieById(movieID)).thenReturn(Optional.of(movie));
+        when(actorService.findActorById(actorID)).thenReturn(Optional.empty());
+        Assert.assertEquals(HttpStatus.OK,controller.deleteMovie(movieID,actorID).getStatusCode());
+    }
+
+    @Test
+    public void asdd2(){
+        when(movieService.findMovieById(movieID)).thenReturn(Optional.of(movie));
+        when(actorService.findActorById(actorID)).thenReturn(Optional.of(actor));
+        Assert.assertEquals(HttpStatus.BAD_REQUEST,controller.deleteMovie(movieID,actorID).getStatusCode());
+    }
+
 }

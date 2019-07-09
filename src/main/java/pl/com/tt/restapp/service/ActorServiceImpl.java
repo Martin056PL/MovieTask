@@ -61,17 +61,19 @@ public class ActorServiceImpl implements ActorService {
     }
 
     @Override
-    public ResponseEntity<?> deleteActorById(Movie movie, Long actorId) {
+    public ResponseEntity<Actor> deleteActorById(Movie movie, Long actorId) {
         deleteActor(actorId);
         movieService.saveMovie(movie);
         return ResponseEntity.ok().build();
     }
 
-    private Actor saveActor(Actor actor) {
+    @Override
+    public Actor saveActor(Actor actor) {
         return repository.save(actor);
     }
 
-    private void deleteActor(Long id) {
+    @Override
+    public void deleteActor(Long id) {
         repository.deleteById(id);
     }
 }

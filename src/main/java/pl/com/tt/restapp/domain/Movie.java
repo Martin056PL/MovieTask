@@ -11,7 +11,6 @@ import java.util.List;
 
 @Data
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "movies")
 public class Movie implements Serializable {

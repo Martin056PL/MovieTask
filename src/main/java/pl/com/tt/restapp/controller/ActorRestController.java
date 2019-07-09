@@ -91,7 +91,8 @@ public class ActorRestController {
     public ResponseEntity<?> deleteMovie(@PathVariable Long movieId, @PathVariable Long actorId) {
         Optional<Movie> optionalMovieFromDatabase = movieService.findMovieById(movieId);
         if (optionalMovieFromDatabase.isPresent()) {
-           return actorService.deleteActorById(optionalMovieFromDatabase.get(), actorId);
+        actorService.deleteActor(actorId);
+        return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.badRequest().build();
         }

@@ -7,11 +7,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-@Getter @Setter @ToString
-@EqualsAndHashCode
-
 @Entity
 @Table(name = "actors")
 public class Actor implements Serializable {
