@@ -9,9 +9,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import pl.com.tt.restapp.domain.Actor;
 import pl.com.tt.restapp.domain.Movie;
-import pl.com.tt.restapp.service.ActorService;
 import pl.com.tt.restapp.service.MovieServiceImpl;
 
+import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -21,16 +21,10 @@ import java.util.Optional;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class MovieControllerTests {
+public class MovieRestControllerTests {
 
     @Mock
     Movie movie;
-
-    @Mock
-    Actor actor;
-
-    @Mock
-    ActorService actorService;
 
     @Mock
     MovieServiceImpl movieService;
@@ -42,20 +36,20 @@ public class MovieControllerTests {
 
     //get
     @Test
-    public void should_status_code_bo_ok_when_controller_returns_not_empty_movie_list(){
+    public void should_status_code_bo_ok_when_controller_returns_not_empty_movie_list() {
         Assert.assertEquals(HttpStatus.OK, movieController.getAllMovies().getStatusCode());
     }
 
     @Test
-    public void should_movie_list_has_the_same_size_as_movie_list_returned_from_controller(){
+    public void should_movie_list_has_the_same_size_as_movie_list_returned_from_controller() {
         when(movieService.findAllMovies()).thenReturn(Collections.singletonList(movie));
-        Assert.assertEquals(Collections.singleton(movie).size(),movieController.getAllMovies().getBody().size());
+        Assert.assertEquals(Collections.singleton(movie).size(), movieController.getAllMovies().getBody().size());
     }
 
     @Test
-    public void should_movie_list_be_as_empty_as_movie_list_returned_from_controller(){
+    public void should_movie_list_be_as_empty_as_movie_list_returned_from_controller() {
         when(movieService.findAllMovies()).thenReturn(Collections.emptyList());
-        Assert.assertEquals(Collections.emptyList(),movieController.getAllMovies().getBody());
+        Assert.assertEquals(Collections.emptyList(), movieController.getAllMovies().getBody());
     }
 
     @Test
@@ -65,13 +59,13 @@ public class MovieControllerTests {
     }
 
     @Test
-    public void should_body_response_be_equal_when_controller_returns_movie(){
+    public void should_body_response_be_equal_when_controller_returns_movie() {
         when(movieService.findMovieById(ID)).thenReturn(Optional.of(movie));
-        Assert.assertEquals(movie,movieController.getAllMoviesById(ID).getBody());
+        Assert.assertEquals(movie, movieController.getAllMoviesById(ID).getBody());
     }
 
     @Test
-    public void should_body_every_single_data_be_as_equal_as_movie_returned_by_controller(){
+    public void should_body_every_single_data_be_as_equal_as_movie_returned_by_controller() {
         List<Actor> listOfActors = movie.getActors();
         String title = movie.getTitle();
         String type = movie.getType();
@@ -91,33 +85,39 @@ public class MovieControllerTests {
         Assert.assertEquals(HttpStatus.NOT_FOUND, movieController.getAllMoviesById(ID).getStatusCode());
     }
 
+    //post
+
+    @Test
+    public void sad() throws URISyntaxException {
+        when(movieService.saveMovie(movie)).thenReturn(movie);
+        Assert.assertEquals(movie, movieController.saveMovie(movie).getBody());
+    }
+
     //put
     @Test
-    public void asd(){
+    public void should_return_status_cod_ok_when_controller_will_find_movie_with_proper_id() {
         when(movieService.findMovieById(ID)).thenReturn(Optional.of(movie));
-        Assert.assertEquals(HttpStatus.OK, movieController.updateMovie(ID,movie).getStatusCode());
+        Assert.assertEquals(HttpStatus.OK, movieController.updateMovie(ID, movie).getStatusCode());
     }
 
     @Test
-    public void asd1(){
+    public void should_return_status_cod_bad_request_when_controller_will_not_find_movie_with_proper_id() {
         when(movieService.findMovieById(ID)).thenReturn(Optional.empty());
-        Assert.assertEquals(HttpStatus.BAD_REQUEST, movieController.updateMovie(ID,movie).getStatusCode());
+        Assert.assertEquals(HttpStatus.BAD_REQUEST, movieController.updateMovie(ID, movie).getStatusCode());
     }
 
     //delete
     @Test
-    public void should_return_status_code_ok_when_delete_movie_which_exist_by_id(){
+    public void should_return_status_code_ok_when_delete_movie_which_exist_by_id() {
         when(movieService.findMovieById(ID)).thenReturn(Optional.of(movie));
-        Assert.assertEquals(HttpStatus.OK,movieController.deleteMovie(ID).getStatusCode());
+        Assert.assertEquals(HttpStatus.OK, movieController.deleteMovie(ID).getStatusCode());
     }
 
     @Test
-    public void should_return_status_code_bad_request_when_delete_movie_which_do_not_exist_by_id(){
+    public void should_return_status_code_bad_request_when_delete_movie_which_do_not_exist_by_id() {
         when(movieService.findMovieById(ID)).thenReturn(Optional.empty());
-        Assert.assertEquals(HttpStatus.BAD_REQUEST,movieController.deleteMovie(ID).getStatusCode());
+        Assert.assertEquals(HttpStatus.BAD_REQUEST, movieController.deleteMovie(ID).getStatusCode());
     }
-
-
 
 
 }

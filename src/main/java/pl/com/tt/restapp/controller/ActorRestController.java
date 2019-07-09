@@ -11,7 +11,6 @@ import pl.com.tt.restapp.service.ActorService;
 import pl.com.tt.restapp.service.MovieService;
 
 import javax.validation.Valid;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
@@ -33,12 +32,12 @@ public class ActorRestController {
     }
 
     @GetMapping("actors")
-    public List<Actor> getAllMovies() {
-        return actorService.findAllActors();
+    public ResponseEntity<List<Actor>> getAllActors() {
+        return new ResponseEntity<>(actorService.findAllActors(), HttpStatus.OK);
     }
 
     @GetMapping("actors/{id}")
-    public ResponseEntity<?> getAllMoviesById(@PathVariable Long id) {
+    public ResponseEntity<?> getActorByIdFromAllDatabase(@PathVariable Long id) {
         Optional<Actor> actorFromDataBase = actorService.findActorById(id);
         return actorFromDataBase.map(response -> ResponseEntity.ok().body(response))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -62,56 +61,34 @@ public class ActorRestController {
     public ResponseEntity<Movie> saveActorToProperMovie(@PathVariable Long movieId, @RequestBody Actor actor) throws URISyntaxException {
         Optional<Movie> movieFromDataBase = movieService.findMovieById(movieId);
         if (movieFromDataBase.isPresent()) {
-            Movie movie = movieFromDataBase.get();
-            movie.getActors().add(actor);
-            Movie result = movieService.saveMovie(movie);
-            return ResponseEntity.created(new URI("add-movie" + result))
-                    .body(result);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return actorService.saveActorToProperMovie(movieFromDataBase.get(), actor);
+        }else{
+            return ResponseEntity.badRequest().build();
         }
     }
 
-
-    @PostMapping("actors")
-    public ResponseEntity<Actor> saveActor(@Valid @RequestBody Actor actor) throws URISyntaxException {
-        Actor result = actorService.saveActor(actor);
-        return ResponseEntity.created(new URI("add-actor" + result.getActorId()))
-                .body(result);
-
-    }
-
     @PutMapping("movies/{movieId}/actors/{actorId}")
-    public ResponseEntity<Actor> updateActorInProperMovieByMovieId(@PathVariable Long movieId, @PathVariable Long actorId, @Valid @RequestBody Actor actorJSON) throws URISyntaxException {
+    public ResponseEntity<Actor> updateActorInProperMovieByMovieId(@PathVariable Long movieId, @PathVariable Long actorId, @Valid @RequestBody Actor actorJSON) {
         Optional<Movie> movieFromDatabase = movieService.findMovieById(movieId);
         if (movieFromDatabase.isPresent()) {
-            List<Actor> actorsList = movieFromDatabase.get().getActors();
-            Optional<Actor> optionalActorFromDataBaseBaseOnId = actorsList.stream().filter(actor -> actor.getActorId().equals(actorId)).findAny();
-            if (optionalActorFromDataBaseBaseOnId.isPresent()) {
-                Actor result = actorService.saveActor(actorJSON);
-                return ResponseEntity.ok().body(result);
-            } else {
-                return ResponseEntity.badRequest().build();
-            }
+            return actorService.updateActorForProperMovie(movieFromDatabase.get(), actorId, actorJSON);
         } else {
             return ResponseEntity.badRequest().build();
         }
     }
 
-    @PutMapping("movie/{id}/actors")
-    public ResponseEntity<Actor> updateMovie(@PathVariable Long id, @Valid @RequestBody Actor actor) {
-        Optional<Actor> movieFromDatabase = actorService.findActorById(id);
+    @PutMapping("movie/{actorId}/actors")
+    public ResponseEntity<Actor> updateMovie(@PathVariable Long actorId, @Valid @RequestBody Actor actor) {
+        Optional<Actor> movieFromDatabase = actorService.findActorById(actorId);
         if (movieFromDatabase.isPresent()) {
-            actor.setActorId(id);
-            Actor result = actorService.saveActor(actor);
-            return ResponseEntity.ok().body(result);
+            return actorService.updateActor(actor,actorId);
         } else {
             return ResponseEntity.badRequest().build();
         }
     }
 
     @DeleteMapping("movies/{movieId}/actors/{actorId}")
-    public ResponseEntity<?> deleteMovie2(@PathVariable Long movieId, @PathVariable Long actorId) {
+    public ResponseEntity<?> deleteMovie(@PathVariable Long movieId, @PathVariable Long actorId) {
         Optional<Movie> optionalMovieFromDatabase = movieService.findMovieById(movieId);
         if (optionalMovieFromDatabase.isPresent()) {
             Movie movie = optionalMovieFromDatabase.get();
