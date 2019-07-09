@@ -31,12 +31,12 @@ public class MovieRestController {
     }
 
     @GetMapping("movies")
-    public List<Movie> getAllMovies() {
-        return movieService.findAllMovies();
+    public ResponseEntity<List<Movie>> getAllMovies() {
+        return new ResponseEntity<>(movieService.findAllMovies(), HttpStatus.OK);
     }
 
     @GetMapping("movies/{id}")
-    public ResponseEntity<?> getAllMoviesById(@PathVariable Long id) {
+    public ResponseEntity<Movie> getAllMoviesById(@PathVariable Long id) {
         Optional<Movie> movieFromDataBase = movieService.findMovieById(id);
         return movieFromDataBase.map(response -> ResponseEntity.ok().body(response))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
