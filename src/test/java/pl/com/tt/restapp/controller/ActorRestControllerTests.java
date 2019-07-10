@@ -88,16 +88,28 @@ public class ActorRestControllerTests {
         Assert.assertEquals(HttpStatus.NOT_FOUND, controller.getAllActorsFromMovieByIdMovie(movieID).getStatusCode());
     }
 
+    @Test
+    public void should_return_status_ok_when_controller_returns_actor_by_movie_id_and_actor_id(){
+        when(movieService.findMovieById(movieID)).thenReturn(Optional.of(movie));
+        Assert.assertEquals(HttpStatus.OK,controller.getProperActorBaseOnActorIdFromMovieByIdMovie(movieID,actorID).getStatusCode());
+    }
+
+    @Test
+    public void should_return_status_not_found_when_controller_does_not_return_actor_by_movie_id_and_actor_id(){
+        when(movieService.findMovieById(movieID)).thenReturn(Optional.empty());
+        Assert.assertEquals(HttpStatus.NOT_FOUND,controller.getProperActorBaseOnActorIdFromMovieByIdMovie(movieID,actorID).getStatusCode());
+    }
+
     //post
     @Test
-    public void asd() {
+    public void should_return_status_ok_when_controller_add_actor_to_movie_by_movie_id() {
         when(movieService.findMovieById(movieID)).thenReturn(Optional.of(movie));
         when(actorService.saveActorToProperMovie(movie,actor)).thenReturn(ResponseEntity.ok().build());
         Assert.assertEquals(HttpStatus.OK,controller.saveActorToProperMovie(movieID,actor).getStatusCode());
     }
 
     @Test
-    public void asd1() {
+    public void should_return_status_bad_request_when_controller_add_actor_to_movie_by_not_existing_movie_id() {
         when(movieService.findMovieById(movieID)).thenReturn(Optional.empty());
         when(actorService.saveActorToProperMovie(movie,actor)).thenReturn(ResponseEntity.badRequest().build());
         Assert.assertEquals(HttpStatus.BAD_REQUEST,controller.saveActorToProperMovie(movieID,actor).getStatusCode());

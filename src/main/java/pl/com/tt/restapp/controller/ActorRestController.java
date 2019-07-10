@@ -61,7 +61,7 @@ public class ActorRestController {
         Optional<Movie> movieFromDataBase = movieService.findMovieById(movieId);
         if (movieFromDataBase.isPresent()) {
             return actorService.saveActorToProperMovie(movieFromDataBase.get(), actor);
-        }else{
+        } else {
             return ResponseEntity.badRequest().build();
         }
     }
@@ -76,22 +76,12 @@ public class ActorRestController {
         }
     }
 
-    /*@PutMapping("movie/{actorId}/actors")
-    public ResponseEntity<Actor> updateMovie(@PathVariable Long actorId, @Valid @RequestBody Actor actor) {
-        Optional<Actor> movieFromDatabase = actorService.findActorById(actorId);
-        if (movieFromDatabase.isPresent()) {
-            return actorService.updateActor(actor,actorId);
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
-    }*/
-
     @DeleteMapping("movies/{movieId}/actors/{actorId}")
     public ResponseEntity<?> deleteMovie(@PathVariable Long movieId, @PathVariable Long actorId) {
         Optional<Movie> optionalMovieFromDatabase = movieService.findMovieById(movieId);
         if (optionalMovieFromDatabase.isPresent()) {
-        actorService.deleteActor(actorId);
-        return ResponseEntity.ok().build();
+            actorService.deleteActor(actorId);
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.badRequest().build();
         }
