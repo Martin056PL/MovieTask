@@ -9,12 +9,14 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import pl.com.tt.restapp.domain.Actor;
 import pl.com.tt.restapp.domain.Movie;
-import pl.com.tt.restapp.service.ActorService;
 import pl.com.tt.restapp.service.MovieServiceImpl;
 
 import java.net.URISyntaxException;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 

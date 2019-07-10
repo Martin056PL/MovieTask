@@ -46,7 +46,7 @@ public class ActorServiceImpl implements ActorService {
         Optional<Actor> optionalActorFromDataBaseBaseOnId = actorsList.stream()
                 .filter(actor -> actor.getActorId().equals(actorId)).findAny();
         if (optionalActorFromDataBaseBaseOnId.isPresent()) {
-            Actor result = saveActor(actorJSON);
+            Actor result = repository.save(actorJSON);
             return ResponseEntity.ok().body(result);
         } else {
             return ResponseEntity.badRequest().build();
