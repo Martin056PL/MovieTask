@@ -7,6 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import pl.com.tt.restapp.domain.Actor;
 import pl.com.tt.restapp.domain.Movie;
 import pl.com.tt.restapp.service.ActorServiceImpl;
@@ -18,7 +19,7 @@ import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ActorRestControllerTests {
 
     @Mock
@@ -40,7 +41,7 @@ public class ActorRestControllerTests {
     private static final Long movieID = 1L;
 
     @Test
-    public void asd(){
+    public void should_return_status_ok_when_controller_returns_all_actors() {
         Assert.assertEquals(HttpStatus.OK, controller.getAllActors().getStatusCode());
     }
 
@@ -76,7 +77,7 @@ public class ActorRestControllerTests {
     }
 
     @Test
-    public void should_return_status_ok_when_when_controller_returns_actor_by_movie_id() {
+    public void should_return_status_ok_when_controller_returns_actor_by_movie_id() {
         when(movieService.findMovieById(movieID)).thenReturn(Optional.of(movie));
         Assert.assertEquals(HttpStatus.OK, controller.getAllActorsFromMovieByIdMovie(movieID).getStatusCode());
     }
@@ -87,18 +88,47 @@ public class ActorRestControllerTests {
         Assert.assertEquals(HttpStatus.NOT_FOUND, controller.getAllActorsFromMovieByIdMovie(movieID).getStatusCode());
     }
 
+    //post
     @Test
-    public void asdd(){
+    public void asd() {
         when(movieService.findMovieById(movieID)).thenReturn(Optional.of(movie));
-        when(actorService.findActorById(actorID)).thenReturn(Optional.empty());
-        Assert.assertEquals(HttpStatus.OK,controller.deleteMovie(movieID,actorID).getStatusCode());
+        when(actorService.saveActorToProperMovie(movie,actor)).thenReturn(ResponseEntity.ok().build());
+        Assert.assertEquals(HttpStatus.OK,controller.saveActorToProperMovie(movieID,actor).getStatusCode());
     }
 
     @Test
-    public void asdd2(){
+    public void asd1() {
+        when(movieService.findMovieById(movieID)).thenReturn(Optional.empty());
+        when(actorService.saveActorToProperMovie(movie,actor)).thenReturn(ResponseEntity.badRequest().build());
+        Assert.assertEquals(HttpStatus.BAD_REQUEST,controller.saveActorToProperMovie(movieID,actor).getStatusCode());
+    }
+
+    //put
+    @Test
+    public void should_return_status_ok_when_controller_update_actor_by_movie_id_and_actor_id() {
         when(movieService.findMovieById(movieID)).thenReturn(Optional.of(movie));
-        when(actorService.findActorById(actorID)).thenReturn(Optional.of(actor));
-        Assert.assertEquals(HttpStatus.BAD_REQUEST,controller.deleteMovie(movieID,actorID).getStatusCode());
+        when(actorService.updateActorForProperMovie(movie, actorID, actor)).thenReturn(ResponseEntity.ok(actor));
+        Assert.assertEquals(HttpStatus.OK, controller.updateActorInProperMovieByMovieId(movieID, actorID, actor).getStatusCode());
+    }
+
+    @Test
+    public void should_return_status_ok_when_controller_update_actor_by_movie_id_and_actor_id1() {
+        when(movieService.findMovieById(movieID)).thenReturn(Optional.empty());
+        when(actorService.updateActorForProperMovie(movie, actorID, actor)).thenReturn(ResponseEntity.badRequest().build());
+        Assert.assertEquals(HttpStatus.BAD_REQUEST, controller.updateActorInProperMovieByMovieId(movieID, actorID, actor).getStatusCode());
+    }
+
+    //delete
+    @Test
+    public void should_return_status_ok_when_controller_delete_actor_by_movie_id_which_exist_and_actor_id() {
+        when(movieService.findMovieById(movieID)).thenReturn(Optional.of(movie));
+        Assert.assertEquals(HttpStatus.OK, controller.deleteMovie(movieID, actorID).getStatusCode());
+    }
+
+    @Test
+    public void should_return_status_ok_when_controller_delete_actor_by_movie_id_which_do_not_exist_and_actor_i() {
+        when(movieService.findMovieById(movieID)).thenReturn(Optional.empty());
+        Assert.assertEquals(HttpStatus.BAD_REQUEST, controller.deleteMovie(movieID, actorID).getStatusCode());
     }
 
 }

@@ -11,7 +11,6 @@ import pl.com.tt.restapp.service.ActorService;
 import pl.com.tt.restapp.service.MovieService;
 
 import javax.validation.Valid;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,7 +57,7 @@ public class ActorRestController {
     }
 
     @PostMapping("movies/{movieId}/actors")
-    public ResponseEntity<Movie> saveActorToProperMovie(@PathVariable Long movieId, @RequestBody Actor actor) throws URISyntaxException {
+    public ResponseEntity<Movie> saveActorToProperMovie(@PathVariable Long movieId, @RequestBody Actor actor) {
         Optional<Movie> movieFromDataBase = movieService.findMovieById(movieId);
         if (movieFromDataBase.isPresent()) {
             return actorService.saveActorToProperMovie(movieFromDataBase.get(), actor);
@@ -77,7 +76,7 @@ public class ActorRestController {
         }
     }
 
-    @PutMapping("movie/{actorId}/actors")
+    /*@PutMapping("movie/{actorId}/actors")
     public ResponseEntity<Actor> updateMovie(@PathVariable Long actorId, @Valid @RequestBody Actor actor) {
         Optional<Actor> movieFromDatabase = actorService.findActorById(actorId);
         if (movieFromDatabase.isPresent()) {
@@ -85,7 +84,7 @@ public class ActorRestController {
         } else {
             return ResponseEntity.badRequest().build();
         }
-    }
+    }*/
 
     @DeleteMapping("movies/{movieId}/actors/{actorId}")
     public ResponseEntity<?> deleteMovie(@PathVariable Long movieId, @PathVariable Long actorId) {
