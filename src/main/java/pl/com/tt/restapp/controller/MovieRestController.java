@@ -17,7 +17,7 @@ import java.util.Optional;
 
 
 
-@CrossOrigin
+@CrossOrigin (origins = "http://localhost:3000")
 @RestController
 @RequestScope
 @RequestMapping("/rest")

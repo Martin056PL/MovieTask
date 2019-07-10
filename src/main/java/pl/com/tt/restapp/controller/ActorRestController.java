@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 
-@CrossOrigin
+@CrossOrigin (origins = "http://localhost:3000")
 @RestController
 @RequestScope
 @RequestMapping("/rest")
@@ -36,7 +36,7 @@ public class ActorRestController {
     }
 
     @GetMapping("actors/{id}")
-    public ResponseEntity<?> getActorByIdFromAllDatabase(@PathVariable Long id) {
+    public ResponseEntity<Actor> getActorByIdFromAllDatabase(@PathVariable Long id) {
         Optional<Actor> actorFromDataBase = actorService.findActorById(id);
         return actorFromDataBase.map(response -> ResponseEntity.ok().body(response))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
