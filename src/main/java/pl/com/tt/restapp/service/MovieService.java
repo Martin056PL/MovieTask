@@ -1,11 +1,15 @@
 package pl.com.tt.restapp.service;
 
 import pl.com.tt.restapp.domain.Movie;
+import pl.com.tt.restapp.dto.MovieDTO;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
 
 public interface MovieService {
+
+    Movie mappingToEntity(MovieDTO dto) throws InvocationTargetException, IllegalAccessException;
 
     List<Movie> findAllMovies();
 

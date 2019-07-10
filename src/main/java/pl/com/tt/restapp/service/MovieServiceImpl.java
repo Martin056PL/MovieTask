@@ -1,10 +1,13 @@
 package pl.com.tt.restapp.service;
 
+import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.com.tt.restapp.domain.Movie;
+import pl.com.tt.restapp.dto.MovieDTO;
 import pl.com.tt.restapp.repository.MovieRepository;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +19,14 @@ public class MovieServiceImpl implements MovieService {
     @Autowired
     public MovieServiceImpl(MovieRepository repository) {
         this.repository = repository;
+    }
+
+    @Override
+    public Movie mappingToEntity(MovieDTO dto) throws InvocationTargetException, IllegalAccessException {
+        Movie movie = new Movie();
+        BeanUtilsBean bean = BeanUtilsBean.getInstance();
+        bean.copyProperties(movie, dto);
+        return movie;
     }
 
     @Override
