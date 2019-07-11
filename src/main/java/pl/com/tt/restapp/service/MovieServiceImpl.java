@@ -3,8 +3,11 @@ package pl.com.tt.restapp.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.com.tt.restapp.domain.Movie;
+import pl.com.tt.restapp.dto.MovieDTO;
 import pl.com.tt.restapp.repository.MovieRepository;
+import pl.com.tt.restapp.utils.Utils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,10 +15,17 @@ import java.util.Optional;
 public class MovieServiceImpl implements MovieService {
 
     private MovieRepository repository;
+    private Utils utils;
 
     @Autowired
-    public MovieServiceImpl(MovieRepository repository) {
+    public MovieServiceImpl(MovieRepository repository, Utils utils) {
         this.repository = repository;
+        this.utils = utils;
+    }
+
+    @Override
+    public Movie mappingMovieDtoToEntity(MovieDTO dto) throws InvocationTargetException, IllegalAccessException {
+        return (Movie) utils.mapperFromDtoTOEntity(dto);
     }
 
     @Override
@@ -38,6 +48,5 @@ public class MovieServiceImpl implements MovieService {
     public void deleteMovieById(Long id) {
         repository.deleteById(id);
     }
-
 
 }

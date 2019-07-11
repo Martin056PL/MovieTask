@@ -9,8 +9,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import pl.com.tt.restapp.domain.Actor;
 import pl.com.tt.restapp.domain.Movie;
+import pl.com.tt.restapp.dto.MovieDTO;
 import pl.com.tt.restapp.service.MovieServiceImpl;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.Collections;
@@ -18,13 +20,16 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MovieRestControllerTests {
 
     @Mock
     Movie movie;
+
+    @Mock
+    MovieDTO movieDTO;
 
     @Mock
     MovieServiceImpl movieService;
@@ -43,7 +48,7 @@ public class MovieRestControllerTests {
     @Test
     public void should_movie_list_has_the_same_size_as_movie_list_returned_from_controller() {
         when(movieService.findAllMovies()).thenReturn(Collections.singletonList(movie));
-        Assert.assertEquals(Collections.singleton(movie).size(), movieController.getAllMovies().getBody().size());
+        Assert.assertEquals(Collections.singleton(movie).size(), Objects.requireNonNull(movieController.getAllMovies().getBody()).size());
     }
 
     @Test
@@ -80,30 +85,32 @@ public class MovieRestControllerTests {
     }
 
     @Test
-    public void should_status_code_be_not_found_when_controller_returns_movie_which_does_not_exist_by_movie_id() {
+    public void should_return_status_code_not_found_when_controller_returns_movie_which_does_not_exist_by_movie_id() {
         when(movieService.findMovieById(ID)).thenReturn(Optional.empty());
         Assert.assertEquals(HttpStatus.NOT_FOUND, movieController.getAllMoviesById(ID).getStatusCode());
     }
 
     //post
-
     @Test
-    public void sad() throws URISyntaxException {
+    public void should_return_status_created_when_controller_adds_new_moviel() throws URISyntaxException, InvocationTargetException, IllegalAccessException {
+        when(movieService.mappingMovieDtoToEntity(movieDTO)).thenReturn(movie);
         when(movieService.saveMovie(movie)).thenReturn(movie);
-        Assert.assertEquals(movie, movieController.saveMovie(movie).getBody());
+        Assert.assertEquals(HttpStatus.CREATED, movieController.saveMovie(movieDTO).getStatusCode());
     }
 
     //put
     @Test
-    public void should_return_status_cod_ok_when_controller_will_find_movie_with_proper_id() {
+    public void should_return_status_cod_ok_when_controller_will_find_movie_with_proper_id() throws InvocationTargetException, IllegalAccessException {
+        when(movieService.mappingMovieDtoToEntity(movieDTO)).thenReturn(movie);
         when(movieService.findMovieById(ID)).thenReturn(Optional.of(movie));
-        Assert.assertEquals(HttpStatus.OK, movieController.updateMovie(ID, movie).getStatusCode());
+        Assert.assertEquals(HttpStatus.OK, movieController.updateMovie(ID, movieDTO).getStatusCode());
     }
 
     @Test
-    public void should_return_status_cod_bad_request_when_controller_will_not_find_movie_with_proper_id() {
+    public void should_return_status_cod_bad_request_when_controller_will_not_find_movie_with_proper_id() throws InvocationTargetException, IllegalAccessException {
+        when(movieService.mappingMovieDtoToEntity(movieDTO)).thenReturn(movie);
         when(movieService.findMovieById(ID)).thenReturn(Optional.empty());
-        Assert.assertEquals(HttpStatus.BAD_REQUEST, movieController.updateMovie(ID, movie).getStatusCode());
+        Assert.assertEquals(HttpStatus.BAD_REQUEST, movieController.updateMovie(ID, movieDTO).getStatusCode());
     }
 
     //delete

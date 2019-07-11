@@ -7,7 +7,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import pl.com.tt.restapp.domain.Movie;
+import pl.com.tt.restapp.dto.MovieDTO;
 import pl.com.tt.restapp.repository.MovieRepository;
+import pl.com.tt.restapp.utils.Utils;
+
+import java.lang.reflect.InvocationTargetException;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MovieServiceImplTests {
@@ -16,7 +20,13 @@ public class MovieServiceImplTests {
     MovieRepository repository;
 
     @Mock
+    Utils utils;
+
+    @Mock
     Movie movie;
+
+    @Mock
+    MovieDTO movieDTO;
 
     @InjectMocks
     MovieServiceImpl service;
@@ -36,15 +46,23 @@ public class MovieServiceImplTests {
     }
 
     @Test
-    public void should_verify_saving_movies(){
+    public void should_verify_saving_movies() {
         service.saveMovie(movie);
         Mockito.verify(repository).save(movie);
     }
 
     @Test
-    public void should_verify_deleting_movies(){
+    public void should_verify_deleting_movies() {
         service.deleteMovieById(ID);
         Mockito.verify(repository).deleteById(ID);
     }
+
+    @Test
+    public void should_map_from_DTO_to_Entity() throws InvocationTargetException, IllegalAccessException {
+        service.mappingMovieDtoToEntity(movieDTO);
+        Mockito.verify(utils).mapperFromDtoTOEntity(movieDTO);
+    }
+
+
 
 }

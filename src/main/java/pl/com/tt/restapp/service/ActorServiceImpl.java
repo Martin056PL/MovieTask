@@ -5,8 +5,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import pl.com.tt.restapp.domain.Actor;
 import pl.com.tt.restapp.domain.Movie;
+import pl.com.tt.restapp.dto.ActorDTO;
 import pl.com.tt.restapp.repository.ActorRepository;
+import pl.com.tt.restapp.utils.Utils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,11 +18,18 @@ public class ActorServiceImpl implements ActorService {
 
     private ActorRepository repository;
     private MovieService movieService;
+    private Utils utils;
 
     @Autowired
-    public ActorServiceImpl(ActorRepository repository, MovieService movieService) {
+    public ActorServiceImpl(ActorRepository repository, MovieService movieService, Utils utils) {
         this.repository = repository;
         this.movieService = movieService;
+        this.utils = utils;
+    }
+
+    @Override
+    public Actor mappingActorDtoToEntity(ActorDTO actorDTO) throws InvocationTargetException, IllegalAccessException {
+        return (Actor) utils.mapperFromDtoTOEntity(actorDTO);
     }
 
 
@@ -33,6 +43,7 @@ public class ActorServiceImpl implements ActorService {
         Actor movieFromDataBase = repository.findAllByActorId(id);
         return Optional.ofNullable(movieFromDataBase);
     }
+
     @Override
     public ResponseEntity<Movie> saveActorToProperMovie(Movie movieFromDatabase, Actor actorJSON) {
         movieFromDatabase.getActors().add(actorJSON);

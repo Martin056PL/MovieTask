@@ -1,5 +1,6 @@
 package pl.com.tt.restapp;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,12 +12,7 @@ public class RestAppApplicationTests {
 
     @Test
     public void contextLoads() {
-    }
-
-    @Test
-    public void test()
-    {
-        RestAppApplication.main(new String[]{});
+        Assert.assertTrue(true);
     }
 
 }

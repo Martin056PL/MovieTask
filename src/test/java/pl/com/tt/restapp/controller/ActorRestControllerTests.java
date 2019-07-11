@@ -10,9 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import pl.com.tt.restapp.domain.Actor;
 import pl.com.tt.restapp.domain.Movie;
+import pl.com.tt.restapp.dto.ActorDTO;
 import pl.com.tt.restapp.service.ActorServiceImpl;
 import pl.com.tt.restapp.service.MovieServiceImpl;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +26,9 @@ public class ActorRestControllerTests {
 
     @Mock
     Actor actor;
+
+    @Mock
+    ActorDTO actorDTO;
 
     @Mock
     Movie movie;
@@ -102,32 +107,36 @@ public class ActorRestControllerTests {
 
     //post
     @Test
-    public void should_return_status_ok_when_controller_add_actor_to_movie_by_movie_id() {
+    public void should_return_status_ok_when_controller_add_actor_to_movie_by_movie_id() throws InvocationTargetException, IllegalAccessException {
         when(movieService.findMovieById(movieID)).thenReturn(Optional.of(movie));
+        when(actorService.mappingActorDtoToEntity(actorDTO)).thenReturn(actor);
         when(actorService.saveActorToProperMovie(movie,actor)).thenReturn(ResponseEntity.ok().build());
-        Assert.assertEquals(HttpStatus.OK,controller.saveActorToProperMovie(movieID,actor).getStatusCode());
+        Assert.assertEquals(HttpStatus.OK,controller.saveActorToProperMovie(movieID,actorDTO).getStatusCode());
     }
 
     @Test
-    public void should_return_status_bad_request_when_controller_add_actor_to_movie_by_not_existing_movie_id() {
+    public void should_return_status_bad_request_when_controller_add_actor_to_movie_by_not_existing_movie_id() throws InvocationTargetException, IllegalAccessException {
         when(movieService.findMovieById(movieID)).thenReturn(Optional.empty());
+        when(actorService.mappingActorDtoToEntity(actorDTO)).thenReturn(actor);
         when(actorService.saveActorToProperMovie(movie,actor)).thenReturn(ResponseEntity.badRequest().build());
-        Assert.assertEquals(HttpStatus.BAD_REQUEST,controller.saveActorToProperMovie(movieID,actor).getStatusCode());
+        Assert.assertEquals(HttpStatus.BAD_REQUEST,controller.saveActorToProperMovie(movieID,actorDTO).getStatusCode());
     }
 
     //put
     @Test
-    public void should_return_status_ok_when_controller_update_actor_by_movie_id_and_actor_id() {
+    public void should_return_status_ok_when_controller_update_actor_by_movie_id_and_actor_id() throws InvocationTargetException, IllegalAccessException {
         when(movieService.findMovieById(movieID)).thenReturn(Optional.of(movie));
+        when(actorService.mappingActorDtoToEntity(actorDTO)).thenReturn(actor);
         when(actorService.updateActorForProperMovie(movie, actorID, actor)).thenReturn(ResponseEntity.ok(actor));
-        Assert.assertEquals(HttpStatus.OK, controller.updateActorInProperMovieByMovieId(movieID, actorID, actor).getStatusCode());
+        Assert.assertEquals(HttpStatus.OK, controller.updateActorInProperMovieByMovieId(movieID, actorID, actorDTO).getStatusCode());
     }
 
     @Test
-    public void should_return_status_ok_when_controller_update_actor_by_movie_id_and_actor_id1() {
+    public void should_return_status_ok_when_controller_update_actor_by_movie_id_and_actor_id1() throws InvocationTargetException, IllegalAccessException {
         when(movieService.findMovieById(movieID)).thenReturn(Optional.empty());
+        when(actorService.mappingActorDtoToEntity(actorDTO)).thenReturn(actor);
         when(actorService.updateActorForProperMovie(movie, actorID, actor)).thenReturn(ResponseEntity.badRequest().build());
-        Assert.assertEquals(HttpStatus.BAD_REQUEST, controller.updateActorInProperMovieByMovieId(movieID, actorID, actor).getStatusCode());
+        Assert.assertEquals(HttpStatus.BAD_REQUEST, controller.updateActorInProperMovieByMovieId(movieID, actorID, actorDTO).getStatusCode());
     }
 
     //delete

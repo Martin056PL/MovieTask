@@ -6,18 +6,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 import pl.com.tt.restapp.domain.Movie;
+import pl.com.tt.restapp.dto.MovieDTO;
 import pl.com.tt.restapp.service.MovieService;
 import pl.com.tt.restapp.service.MovieServiceImpl;
 
 import javax.validation.Valid;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
 
-
-@CrossOrigin
+@CrossOrigin (origins = "http://localhost:3000")
 @RestController
 @RequestScope
 @RequestMapping("/rest")
@@ -43,19 +44,21 @@ public class MovieRestController {
     }
 
     @PostMapping("movies")
-    public ResponseEntity<Movie> saveMovie(@Valid @RequestBody Movie movie) throws URISyntaxException {
-        Movie result = movieService.saveMovie(movie);
+    public ResponseEntity<Movie> saveMovie(@Valid @RequestBody MovieDTO movieDTO) throws URISyntaxException, InvocationTargetException, IllegalAccessException {
+        Movie movieTransformedFromDTO = movieService.mappingMovieDtoToEntity(movieDTO);
+        Movie result = movieService.saveMovie(movieTransformedFromDTO);
         return ResponseEntity.created(new URI("add-movie" + result.getMovieId()))
                 .body(result);
 
     }
 
     @PutMapping("movies/{id}")
-    public ResponseEntity<Movie> updateMovie(@PathVariable Long id, @Valid @RequestBody Movie movie) {
+    public ResponseEntity<Movie> updateMovie(@PathVariable Long id, @Valid @RequestBody MovieDTO movieDTO) throws InvocationTargetException, IllegalAccessException {
         Optional<Movie> movieFromDatabase = movieService.findMovieById(id);
+        Movie movieTransformedFromDTO = movieService.mappingMovieDtoToEntity(movieDTO);
         if (movieFromDatabase.isPresent()) {
-            movie.setMovieId(id);
-            Movie result = movieService.saveMovie(movie);
+            movieTransformedFromDTO.setMovieId(id);
+            Movie result = movieService.saveMovie(movieTransformedFromDTO);
             return ResponseEntity.ok().body(result);
         } else {
             return ResponseEntity.badRequest().build();
@@ -63,7 +66,7 @@ public class MovieRestController {
     }
 
     @DeleteMapping("movies/{id}")
-    public ResponseEntity<?> deleteMovie(@PathVariable Long id) {
+    public ResponseEntity<Movie> deleteMovie(@PathVariable Long id) {
         Optional<Movie> movieFromDatabase = movieService.findMovieById(id);
         if (movieFromDatabase.isPresent()) {
             movieService.deleteMovieById(id);
