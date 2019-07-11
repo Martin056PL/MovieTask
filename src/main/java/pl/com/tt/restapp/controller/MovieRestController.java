@@ -66,7 +66,7 @@ public class MovieRestController {
     }
 
     @DeleteMapping("movies/{id}")
-    public ResponseEntity<?> deleteMovie(@PathVariable Long id) {
+    public ResponseEntity<Movie> deleteMovie(@PathVariable Long id) {
         Optional<Movie> movieFromDatabase = movieService.findMovieById(id);
         if (movieFromDatabase.isPresent()) {
             movieService.deleteMovieById(id);

@@ -15,6 +15,7 @@ import javax.validation.Valid;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 
 @CrossOrigin (origins = "http://localhost:3000")
@@ -45,14 +46,14 @@ public class ActorRestController {
     }
 
     @GetMapping("movies/{movieId}/actors")
-    public ResponseEntity<?> getAllActorsFromMovieByIdMovie(@PathVariable Long movieId) {
+    public ResponseEntity<List<Actor>> getAllActorsFromMovieByIdMovie(@PathVariable Long movieId) {
         Optional<Movie> movieFromDataBase = movieService.findMovieById(movieId);
         return movieFromDataBase.map(response -> ResponseEntity.ok().body(response.getActors()))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("movies/{movieId}/actors/{actorId}")
-    public ResponseEntity<?> getProperActorBaseOnActorIdFromMovieByIdMovie(@PathVariable Long movieId, @PathVariable Long actorId) {
+    public ResponseEntity<Stream<Actor>> getProperActorBaseOnActorIdFromMovieByIdMovie(@PathVariable Long movieId, @PathVariable Long actorId) {
         Optional<Movie> movieFromDataBase = movieService.findMovieById(movieId);
         return movieFromDataBase.map(response -> ResponseEntity.ok().body(response.getActors().stream().filter(actor -> actor.getActorId().equals(actorId))))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -81,7 +82,7 @@ public class ActorRestController {
     }
 
     @DeleteMapping("movies/{movieId}/actors/{actorId}")
-    public ResponseEntity<?> deleteMovie(@PathVariable Long movieId, @PathVariable Long actorId) {
+    public ResponseEntity<Movie> deleteMovie(@PathVariable Long movieId, @PathVariable Long actorId) {
         Optional<Movie> optionalMovieFromDatabase = movieService.findMovieById(movieId);
         if (optionalMovieFromDatabase.isPresent()) {
             actorService.deleteActor(actorId);

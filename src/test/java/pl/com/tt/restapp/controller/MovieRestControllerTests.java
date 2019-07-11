@@ -48,7 +48,7 @@ public class MovieRestControllerTests {
     @Test
     public void should_movie_list_has_the_same_size_as_movie_list_returned_from_controller() {
         when(movieService.findAllMovies()).thenReturn(Collections.singletonList(movie));
-        Assert.assertEquals(Collections.singleton(movie).size(), movieController.getAllMovies().getBody().size());
+        Assert.assertEquals(Collections.singleton(movie).size(), Objects.requireNonNull(movieController.getAllMovies().getBody()).size());
     }
 
     @Test
@@ -91,7 +91,6 @@ public class MovieRestControllerTests {
     }
 
     //post
-
     @Test
     public void should_return_status_created_when_controller_adds_new_moviel() throws URISyntaxException, InvocationTargetException, IllegalAccessException {
         when(movieService.mappingMovieDtoToEntity(movieDTO)).thenReturn(movie);
