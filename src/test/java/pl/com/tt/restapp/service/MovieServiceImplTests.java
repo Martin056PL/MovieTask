@@ -1,23 +1,17 @@
 package pl.com.tt.restapp.service;
 
-import org.apache.commons.beanutils.BeanUtilsBean;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.modelmapper.ModelMapper;
 import pl.com.tt.restapp.domain.Movie;
 import pl.com.tt.restapp.dto.MovieDTO;
 import pl.com.tt.restapp.repository.MovieRepository;
+import pl.com.tt.restapp.utils.Utils;
 
 import java.lang.reflect.InvocationTargetException;
-import java.time.LocalDate;
-import java.util.Collections;
-
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MovieServiceImplTests {
@@ -26,7 +20,7 @@ public class MovieServiceImplTests {
     MovieRepository repository;
 
     @Mock
-    BeanUtilsBean bean;
+    Utils utils;
 
     @Mock
     Movie movie;
@@ -63,28 +57,12 @@ public class MovieServiceImplTests {
         Mockito.verify(repository).deleteById(ID);
     }
 
-    /*@Test
-    public void asd() throws InvocationTargetException, IllegalAccessException {
-        service.mappingToEntity(movieDTO);
-        //when(service.mappingToEntity(movieDTO)).thenReturn(movie);
-        Assert.assertEquals(movie,service.mappingToEntity(movieDTO));
-    }*/
-
     @Test
-    public void should_transfer_data_from_movieDTO_to_movie() {
-        ModelMapper mapper = new ModelMapper();
-
-        movieDTO.setTitle("asd");
-        movieDTO.setType("dsa");
-        movieDTO.setActors(Collections.emptyList());
-        movieDTO.setDatePremiere(LocalDate.parse("2000-12-12"));
-
-        Movie movie = mapper.map(movieDTO, Movie.class);
-
-        Assert.assertEquals(movieDTO.getTitle(),movie.getTitle());
-        Assert.assertEquals(movieDTO.getType(),movie.getType());
-        Assert.assertEquals(movieDTO.getActors(),movie.getActors());
-        Assert.assertEquals(movieDTO.getDatePremiere(),movie.getDatePremiere());
+    public void should_map_from_DTO_to_Entity() throws InvocationTargetException, IllegalAccessException {
+        service.mappingToEntity(movieDTO);
+        Mockito.verify(utils).mapperMovieDtoToMovieEntity(movieDTO);
     }
+
+
 
 }

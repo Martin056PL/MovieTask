@@ -19,7 +19,7 @@
         <sonar.exclusions>
             **/domain/*.java,
             **/RestAppApplication.java,
-            **/configuration/*.java
+            **/configuration/*.java,
             **/dto/*.java
         </sonar.exclusions>
     </properties>
