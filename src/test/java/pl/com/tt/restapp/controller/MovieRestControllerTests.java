@@ -93,8 +93,8 @@ public class MovieRestControllerTests {
     //post
 
     @Test
-    public void should_return_status_created_when_controller_adds_new_movie() throws URISyntaxException, InvocationTargetException, IllegalAccessException {
-        when(movieService.mappingToEntity(movieDTO)).thenReturn(movie);
+    public void should_return_status_created_when_controller_adds_new_moviel() throws URISyntaxException, InvocationTargetException, IllegalAccessException {
+        when(movieService.mappingMovieDtoToEntity(movieDTO)).thenReturn(movie);
         when(movieService.saveMovie(movie)).thenReturn(movie);
         Assert.assertEquals(HttpStatus.CREATED, movieController.saveMovie(movieDTO).getStatusCode());
     }
@@ -102,14 +102,14 @@ public class MovieRestControllerTests {
     //put
     @Test
     public void should_return_status_cod_ok_when_controller_will_find_movie_with_proper_id() throws InvocationTargetException, IllegalAccessException {
-        when(movieService.mappingToEntity(movieDTO)).thenReturn(movie);
+        when(movieService.mappingMovieDtoToEntity(movieDTO)).thenReturn(movie);
         when(movieService.findMovieById(ID)).thenReturn(Optional.of(movie));
         Assert.assertEquals(HttpStatus.OK, movieController.updateMovie(ID, movieDTO).getStatusCode());
     }
 
     @Test
     public void should_return_status_cod_bad_request_when_controller_will_not_find_movie_with_proper_id() throws InvocationTargetException, IllegalAccessException {
-        when(movieService.mappingToEntity(movieDTO)).thenReturn(movie);
+        when(movieService.mappingMovieDtoToEntity(movieDTO)).thenReturn(movie);
         when(movieService.findMovieById(ID)).thenReturn(Optional.empty());
         Assert.assertEquals(HttpStatus.BAD_REQUEST, movieController.updateMovie(ID, movieDTO).getStatusCode());
     }

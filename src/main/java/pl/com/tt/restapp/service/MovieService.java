@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface MovieService {
 
-    Movie mappingToEntity(MovieDTO dto) throws InvocationTargetException, IllegalAccessException;
+    Movie mappingMovieDtoToEntity(MovieDTO dto) throws InvocationTargetException, IllegalAccessException;
 
     List<Movie> findAllMovies();
 

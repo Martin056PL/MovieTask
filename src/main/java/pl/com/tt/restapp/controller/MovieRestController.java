@@ -1,6 +1,5 @@
 package pl.com.tt.restapp.controller;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,7 +45,7 @@ public class MovieRestController {
 
     @PostMapping("movies")
     public ResponseEntity<Movie> saveMovie(@Valid @RequestBody MovieDTO movieDTO) throws URISyntaxException, InvocationTargetException, IllegalAccessException {
-        Movie movieTransformedFromDTO = movieService.mappingToEntity(movieDTO);
+        Movie movieTransformedFromDTO = movieService.mappingMovieDtoToEntity(movieDTO);
         Movie result = movieService.saveMovie(movieTransformedFromDTO);
         return ResponseEntity.created(new URI("add-movie" + result.getMovieId()))
                 .body(result);
@@ -56,7 +55,7 @@ public class MovieRestController {
     @PutMapping("movies/{id}")
     public ResponseEntity<Movie> updateMovie(@PathVariable Long id, @Valid @RequestBody MovieDTO movieDTO) throws InvocationTargetException, IllegalAccessException {
         Optional<Movie> movieFromDatabase = movieService.findMovieById(id);
-        Movie movieTransformedFromDTO = movieService.mappingToEntity(movieDTO);
+        Movie movieTransformedFromDTO = movieService.mappingMovieDtoToEntity(movieDTO);
         if (movieFromDatabase.isPresent()) {
             movieTransformedFromDTO.setMovieId(id);
             Movie result = movieService.saveMovie(movieTransformedFromDTO);

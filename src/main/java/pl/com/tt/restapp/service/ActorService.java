@@ -3,11 +3,15 @@ package pl.com.tt.restapp.service;
 import org.springframework.http.ResponseEntity;
 import pl.com.tt.restapp.domain.Actor;
 import pl.com.tt.restapp.domain.Movie;
+import pl.com.tt.restapp.dto.ActorDTO;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
 
 public interface ActorService {
+
+    Actor mappingActorDtoToEntity(ActorDTO actorDTO) throws InvocationTargetException, IllegalAccessException;
 
     List<Actor> findAllActors();
 

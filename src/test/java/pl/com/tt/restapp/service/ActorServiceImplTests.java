@@ -8,15 +8,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import pl.com.tt.restapp.domain.Actor;
 import pl.com.tt.restapp.domain.Movie;
+import pl.com.tt.restapp.dto.ActorDTO;
 import pl.com.tt.restapp.repository.ActorRepository;
+import pl.com.tt.restapp.utils.Utils;
 
-import java.net.http.HttpClient;
-import java.time.LocalDate;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -32,7 +31,13 @@ public class ActorServiceImplTests {
     Actor actor;
 
     @Mock
+    ActorDTO actorDTO;
+
+    @Mock
     Movie movie;
+
+    @Mock
+    Utils utils;
 
     @Mock
     MovieServiceImpl movieService;
@@ -97,6 +102,12 @@ public class ActorServiceImplTests {
         service.deleteActorById(movie, ID);
         Mockito.verify(repository).deleteById(ID);
         Mockito.verify(movieService).saveMovie(movie);
+    }
+
+    @Test
+    public void asd() throws InvocationTargetException, IllegalAccessException {
+        service.mappingActorDtoToEntity(actorDTO);
+        Mockito.verify(utils).mapperFromDtoTOEntity(actorDTO);
     }
 
     private List<Actor> someData(){

@@ -7,10 +7,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 import pl.com.tt.restapp.domain.Actor;
 import pl.com.tt.restapp.domain.Movie;
+import pl.com.tt.restapp.dto.ActorDTO;
 import pl.com.tt.restapp.service.ActorService;
 import pl.com.tt.restapp.service.MovieService;
 
 import javax.validation.Valid;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,20 +59,22 @@ public class ActorRestController {
     }
 
     @PostMapping("movies/{movieId}/actors")
-    public ResponseEntity<Movie> saveActorToProperMovie(@PathVariable Long movieId, @RequestBody Actor actor) {
+    public ResponseEntity<Movie> saveActorToProperMovie(@PathVariable Long movieId, @RequestBody ActorDTO actorDTO) throws InvocationTargetException, IllegalAccessException {
+        Actor actorTransformedFromActorDTO = actorService.mappingActorDtoToEntity(actorDTO);
         Optional<Movie> movieFromDataBase = movieService.findMovieById(movieId);
         if (movieFromDataBase.isPresent()) {
-            return actorService.saveActorToProperMovie(movieFromDataBase.get(), actor);
+            return actorService.saveActorToProperMovie(movieFromDataBase.get(), actorTransformedFromActorDTO);
         } else {
             return ResponseEntity.badRequest().build();
         }
     }
 
     @PutMapping("movies/{movieId}/actors/{actorId}")
-    public ResponseEntity<Actor> updateActorInProperMovieByMovieId(@PathVariable Long movieId, @PathVariable Long actorId, @Valid @RequestBody Actor actorJSON) {
+    public ResponseEntity<Actor> updateActorInProperMovieByMovieId(@PathVariable Long movieId, @PathVariable Long actorId, @Valid @RequestBody ActorDTO actorDTO) throws InvocationTargetException, IllegalAccessException {
+        Actor actorTransformedFromActorDTO = actorService.mappingActorDtoToEntity(actorDTO);
         Optional<Movie> movieFromDatabase = movieService.findMovieById(movieId);
         if (movieFromDatabase.isPresent()) {
-            return actorService.updateActorForProperMovie(movieFromDatabase.get(), actorId, actorJSON);
+            return actorService.updateActorForProperMovie(movieFromDatabase.get(), actorId, actorTransformedFromActorDTO);
         } else {
             return ResponseEntity.badRequest().build();
         }

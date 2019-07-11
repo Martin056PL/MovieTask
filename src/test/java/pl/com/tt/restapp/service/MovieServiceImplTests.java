@@ -59,8 +59,8 @@ public class MovieServiceImplTests {
 
     @Test
     public void should_map_from_DTO_to_Entity() throws InvocationTargetException, IllegalAccessException {
-        service.mappingToEntity(movieDTO);
-        Mockito.verify(utils).mapperMovieDtoToMovieEntity(movieDTO);
+        service.mappingMovieDtoToEntity(movieDTO);
+        Mockito.verify(utils).mapperFromDtoTOEntity(movieDTO);
     }
 
 

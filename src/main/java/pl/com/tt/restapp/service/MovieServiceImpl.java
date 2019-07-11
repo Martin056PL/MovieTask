@@ -1,6 +1,5 @@
 package pl.com.tt.restapp.service;
 
-import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.com.tt.restapp.domain.Movie;
@@ -25,8 +24,8 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public Movie mappingToEntity(MovieDTO dto) throws InvocationTargetException, IllegalAccessException {
-        return utils.mapperMovieDtoToMovieEntity(dto);
+    public Movie mappingMovieDtoToEntity(MovieDTO dto) throws InvocationTargetException, IllegalAccessException {
+        return (Movie) utils.mapperFromDtoTOEntity(dto);
     }
 
     @Override
