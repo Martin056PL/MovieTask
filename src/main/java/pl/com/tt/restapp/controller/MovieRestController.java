@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Optional;
 
 
-
 @CrossOrigin (origins = "http://localhost:3000")
 @RestController
 @RequestScope
@@ -54,18 +53,18 @@ public class MovieRestController {
 
     }
 
-    /*@PutMapping("movies/{id}")
-    public ResponseEntity<Movie> updateMovie(@PathVariable Long id, @Valid @RequestBody MovieDTO movieDTO) {
+    @PutMapping("movies/{id}")
+    public ResponseEntity<Movie> updateMovie(@PathVariable Long id, @Valid @RequestBody MovieDTO movieDTO) throws InvocationTargetException, IllegalAccessException {
         Optional<Movie> movieFromDatabase = movieService.findMovieById(id);
-        Movie movieTransformedFromDTO = Mapper.mappingToEntity(movieDTO);
+        Movie movieTransformedFromDTO = movieService.mappingToEntity(movieDTO);
         if (movieFromDatabase.isPresent()) {
             movieTransformedFromDTO.setMovieId(id);
-            MovieDTO result = movieService.saveMovie(movieTransformedFromDTO);
+            Movie result = movieService.saveMovie(movieTransformedFromDTO);
             return ResponseEntity.ok().body(result);
         } else {
             return ResponseEntity.badRequest().build();
         }
-    }*/
+    }
 
     @DeleteMapping("movies/{id}")
     public ResponseEntity<?> deleteMovie(@PathVariable Long id) {
@@ -76,19 +75,6 @@ public class MovieRestController {
         } else {
             return ResponseEntity.badRequest().build();
         }
-    }
-
-    private MovieDTO mappingToDTO(Movie movie){
-        MovieDTO dto = new MovieDTO();
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.map(movie,dto);
-        return dto;
-    }
-    private Movie mappingToEntity(MovieDTO dto){
-        Movie movie = new Movie();
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.map(dto,movie);
-        return movie;
     }
 }
 

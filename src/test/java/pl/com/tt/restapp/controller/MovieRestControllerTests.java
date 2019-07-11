@@ -85,7 +85,7 @@ public class MovieRestControllerTests {
     }
 
     @Test
-    public void should_status_code_be_not_found_when_controller_returns_movie_which_does_not_exist_by_movie_id() {
+    public void should_return_status_code_not_found_when_controller_returns_movie_which_does_not_exist_by_movie_id() {
         when(movieService.findMovieById(ID)).thenReturn(Optional.empty());
         Assert.assertEquals(HttpStatus.NOT_FOUND, movieController.getAllMoviesById(ID).getStatusCode());
     }
@@ -93,24 +93,26 @@ public class MovieRestControllerTests {
     //post
 
     @Test
-    public void sad() throws URISyntaxException, InvocationTargetException, IllegalAccessException {
+    public void should_return_status_created_when_controller_adds_new_movie() throws URISyntaxException, InvocationTargetException, IllegalAccessException {
         when(movieService.mappingToEntity(movieDTO)).thenReturn(movie);
         when(movieService.saveMovie(movie)).thenReturn(movie);
-        Assert.assertEquals(HttpStatus.OK, movieController.saveMovie(movieDTO).getStatusCode());
+        Assert.assertEquals(HttpStatus.CREATED, movieController.saveMovie(movieDTO).getStatusCode());
     }
 
     //put
-    /*@Test
-    public void should_return_status_cod_ok_when_controller_will_find_movie_with_proper_id() {
+    @Test
+    public void should_return_status_cod_ok_when_controller_will_find_movie_with_proper_id() throws InvocationTargetException, IllegalAccessException {
+        when(movieService.mappingToEntity(movieDTO)).thenReturn(movie);
         when(movieService.findMovieById(ID)).thenReturn(Optional.of(movie));
-        Assert.assertEquals(HttpStatus.OK, movieController.updateMovie(ID, movie).getStatusCode());
+        Assert.assertEquals(HttpStatus.OK, movieController.updateMovie(ID, movieDTO).getStatusCode());
     }
 
     @Test
-    public void should_return_status_cod_bad_request_when_controller_will_not_find_movie_with_proper_id() {
+    public void should_return_status_cod_bad_request_when_controller_will_not_find_movie_with_proper_id() throws InvocationTargetException, IllegalAccessException {
+        when(movieService.mappingToEntity(movieDTO)).thenReturn(movie);
         when(movieService.findMovieById(ID)).thenReturn(Optional.empty());
-        Assert.assertEquals(HttpStatus.BAD_REQUEST, movieController.updateMovie(ID, movie).getStatusCode());
-    }*/
+        Assert.assertEquals(HttpStatus.BAD_REQUEST, movieController.updateMovie(ID, movieDTO).getStatusCode());
+    }
 
     //delete
     @Test

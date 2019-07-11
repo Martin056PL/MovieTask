@@ -1,6 +1,5 @@
 package pl.com.tt.restapp.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
